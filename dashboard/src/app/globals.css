@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Monochrome Stealth Palette */
+    --background: 0 0% 0%;       /* #000000 */
+    --foreground: 0 0% 100%;     /* #FFFFFF */
+    
+    --card: 0 0% 3%;             /* #080808 */
+    --card-foreground: 0 0% 90%; /* #E5E5E5 */
+    
+    --popover: 0 0% 4%;          /* #0a0a0a */
+    --popover-foreground: 0 0% 90%;
+    
+    --primary: 0 0% 100%;        /* #FFFFFF */
+    --primary-foreground: 0 0% 0%; /* #000000 */
+    
+    --secondary: 0 0% 8%;        /* #141414 */
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 0 0% 12%;           /* #1f1f1f */
+    --muted-foreground: 0 0% 60%; /* #999999 */
+    
+    --accent: 0 0% 12%;          /* #1f1f1f */
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 0% 25%;     /* Grayscale alternative to red */
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 12%;          /* #1f1f1f */
+    --input: 0 0% 12%;
+    --ring: 0 0% 30%;            /* Focus ring */
+    
+    --radius: 0.3rem;            /* Harder, sharper corners for stealth look */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Custom Scrollbar for Stealth Look */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 20%);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(0 0% 30%);
+}

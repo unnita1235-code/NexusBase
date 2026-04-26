@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is the primary objective of Project A?",
+    "ground_truth": "The primary objective of Project A is to optimize the Q3 budget through strategic reallocation of resources, aiming for a 15% efficiency gain."
+  },
+  {
+    "question": "How does Project A impact the Q3 budget?",
+    "ground_truth": "Project A reduces the Q3 budget by 15% due to reallocation and process optimization."
+  },
+  {
+    "question": "What are the core technologies used in NexusBase?",
+    "ground_truth": "NexusBase uses a combination of LangGraph for orchestration, pgvector for semantic search, Neo4j for knowledge graph traversal, and Gemini 3 Flash for document grading."
+  },
+  {
+    "question": "Who is the lead architect for NexusBase?",
+    "ground_truth": "The lead architect for NexusBase is Sarah Jenkins, who oversees the self-corrective retrieval architecture."
+  },
+  {
+    "question": "What is the role of Gemini 3 Flash in the pipeline?",
+    "ground_truth": "Gemini 3 Flash is used as a strict relevance grader to evaluate retrieved document chunks before they are passed to the generation node."
+  },
+  {
+    "question": "When was Project A officially launched?",
+    "ground_truth": "Project A was officially launched on July 1st, 2023, following the Q2 board review."
+  },
+  {
+    "question": "What happens if no relevant documents are found during retrieval?",
+    "ground_truth": "If no relevant documents are found, the system triggers a corrective path which includes query rewriting or falling back to a Tavily web search."
+  },
+  {
+    "question": "What is the chunk size used for document ingestion?",
+    "ground_truth": "The default chunk size for document ingestion in NexusBase is 512 tokens with an overlap of 64 tokens."
+  },
+  {
+    "question": "How does the hybrid search combine results?",
+    "ground_truth": "Hybrid search combines semantic search (cosine similarity) and keyword search (BM25/TSVector) using Reciprocal Rank Fusion (RRF)."
+  },
+  {
+    "question": "What is the purpose of the Knowledge Graph in GraphRAG?",
+    "ground_truth": "The Knowledge Graph is used for multi-hop queries to traverse relationships between entities and fetch targeted chunks that might be missed by simple semantic search."
+  },
+  {
+    "question": "Which model is used for entity extraction in the knowledge graph?",
+    "ground_truth": "Gemini 3.1 Pro is used as the extractor model for identifying entities and relationships during document ingestion."
+  },
+  {
+    "question": "What is the default top_k value for retrieval?",
+    "ground_truth": "The default top_k value is 5, meaning the top 5 most relevant chunks are retrieved for generation."
+  },
+  {
+    "question": "How does the system handle PII (Personally Identifiable Information)?",
+    "ground_truth": "NexusBase includes a PII redaction layer that masks sensitive information like emails, phone numbers, and SSNs before data is sent to the LLM."
+  },
+  {
+    "question": "What database is used for the semantic cache?",
+    "ground_truth": "Redis is used for the semantic cache to store and retrieve previously generated answers based on query similarity."
+  },
+  {
+    "question": "What is the similarity threshold for a semantic cache hit?",
+    "ground_truth": "The default similarity threshold for the semantic cache is 0.98."
+  },
+  {
+    "question": "Which LLM model is used for final answer generation?",
+    "ground_truth": "The default model for final answer generation is gpt-4o-mini."
+  },
+  {
+    "question": "How are access levels implemented in NexusBase?",
+    "ground_truth": "Access levels (public, internal, confidential, restricted) are enforced at the database level using SQL WHERE clauses during chunk retrieval."
+  },
+  {
+    "question": "What is the maximum number of query rewrite retries?",
+    "ground_truth": "The system allows for a maximum of 1 query rewrite retry before falling back to secondary search or web search."
+  },
+  {
+    "question": "What is the role of Tavily in the RAG pipeline?",
+    "ground_truth": "Tavily is used as a web search fallback when internal documentation is insufficient to answer the user's query."
+  },
+  {
+    "question": "How is the relevance ratio calculated in the grading node?",
+    "ground_truth": "The relevance ratio is calculated as the number of chunks graded 'yes' divided by the total number of retrieved chunks."
+  },
+  {
+    "question": "What is the secondary search fallback?",
+    "ground_truth": "Secondary search is a broader search across secondary internal databases with relaxed parameters, triggered when query rewriting fails."
+  },
+  {
+    "question": "Which embedding model is used by default?",
+    "ground_truth": "The default embedding model is text-embedding-3-small."
+  },
+  {
+    "question": "How does the system prevent hallucinations?",
+    "ground_truth": "The system prevents hallucinations through strict relevance grading, grounding the generation in retrieved context, and providing source citations."
+  },
+  {
+    "question": "What is the purpose of the arq library in the backend?",
+    "ground_truth": "The arq library is used for managing asynchronous background tasks and job queuing."
+  },
+  {
+    "question": "How are document hashes used in the ingestion pipeline?",
+    "ground_truth": "Document hashes (SHA-256) are used to implement delta updates, skipping unchanged documents and only re-processing modified ones."
+  },
+  {
+    "question": "What is the significance of the rrf_k parameter?",
+    "ground_truth": "The rrf_k parameter (default 60) is used in the Reciprocal Rank Fusion algorithm to control the weighting of high-ranking vs low-ranking results."
+  },
+  {
+    "question": "Which model is used for vision-based ingestion?",
+    "ground_truth": "Gemini 3.1 Pro is used for vision-based ingestion to extract text and context from images and complex PDFs."
+  },
+  {
+    "question": "How is the database DSN constructed in settings?",
+    "ground_truth": "The database DSN is derived from the database_url by replacing the 'postgresql+asyncpg://' dialect with 'postgresql://'."
+  },
+  {
+    "question": "What is the default port for the backend server?",
+    "ground_truth": "The default backend port is 8000."
+  },
+  {
+    "question": "How does the system handle multi-hop queries?",
+    "ground_truth": "Multi-hop queries are handled by classifying them as such and then performing a graph-first retrieval to navigate entity relationships."
+  },
+  {
+    "question": "What is the purpose of the 'audit.db' file?",
+    "ground_truth": "The 'audit.db' file is a SQLite database used for logging and auditing system actions and user queries."
+  },
+  {
+    "question": "What is the temperature setting for the generation LLM?",
+    "ground_truth": "The temperature setting for the generation LLM (gpt-4o-mini) is 0.3."
+  },
+  {
+    "question": "How are sources cited in the generated answers?",
+    "ground_truth": "Generated answers cite sources by mentioning the document name (e.g., [Source Name]) as instructed in the system prompt."
+  },
+  {
+    "question": "What is the maximum number of tokens for the generated answer?",
+    "ground_truth": "The maximum tokens for the generated answer is set to 1024."
+  },
+  {
+    "question": "How is the cosine distance calculated in pgvector?",
+    "ground_truth": "Cosine distance in pgvector is calculated using the <=> operator in SQL queries."
+  },
+  {
+    "question": "What index type is used for vector search in Postgres?",
+    "ground_truth": "An HNSW (Hierarchical Navigable Small World) index is used for fast vector similarity search."
+  },
+  {
+    "question": "What is the overlap between document chunks?",
+    "ground_truth": "The default overlap between document chunks is 64 tokens."
+  },
+  {
+    "question": "How does the system handle concurrent database connections?",
+    "ground_truth": "The system uses an asyncpg connection pool to manage and reuse database connections efficiently."
+  },
+  {
+    "question": "What is the role of the 'shared' directory in the app folder?",
+    "ground_truth": "The 'shared' directory contains models, database utilities, and common logic used across different modules of the application."
+  },
+  {
+    "question": "How is query classification performed?",
+    "ground_truth": "Query classification is performed by an LLM that analyzes the query and returns a JSON object specifying the query type and extracted entities."
+  },
+  {
+    "question": "What is the purpose of the 'traversal_path' in GraphRAG?",
+    "ground_truth": "The traversal_path records the sequence of entities and relationships navigated in the knowledge graph for observability."
+  },
+  {
+    "question": "How does the system handle failed LLM calls during grading?",
+    "ground_truth": "If an LLM call fails during grading, the system defaults to marking the chunk as 'no' (irrelevant) and logs a warning."
+  },
+  {
+    "question": "What is the format of the 'embedding' column in the document_chunks table?",
+    "ground_truth": "The 'embedding' column is of type vector(1536), which stores 1536-dimensional floating-point vectors."
+  },
+  {
+    "question": "How are full-text searches performed in the database?",
+    "ground_truth": "Full-text searches are performed using the 'to_tsvector' and 'to_tsquery' functions on the 'content' column, indexed by a GIN index."
+  },
+  {
+    "question": "What is the purpose of the 'score_w1' setting?",
+    "ground_truth": "The 'score_w1' setting is the weight assigned to semantic similarity (cosine distance) when calculating the final hybrid score (default 0.7)."
+  },
+  {
+    "question": "What is the purpose of the 'score_w2' setting?",
+    "ground_truth": "The 'score_w2' setting is the weight assigned to keyword match when calculating the final hybrid score (default 0.3)."
+  },
+  {
+    "question": "How are CORS origins configured?",
+    "ground_truth": "CORS origins are configured via a comma-separated string in the environment variables, which is then parsed into a list by the Settings class."
+  },
+  {
+    "question": "What is the maximum number of hops for graph traversal?",
+    "ground_truth": "The default maximum number of hops for graph traversal is 3."
+  },
+  {
+    "question": "Which library is used for PDF parsing?",
+    "ground_truth": "The PyMuPDF library (imported as fitz) is used for high-performance PDF parsing."
+  },
+  {
+    "question": "What is the primary benefit of the semantic router architecture?",
+    "ground_truth": "The semantic router architecture allows for more efficient query handling by routing different types of questions to specialized pipelines (Analytical, Document, or Summarization)."
+  }
+]

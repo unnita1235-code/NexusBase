@@ -1,0 +1,57 @@
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    container_name: nexusbase-db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: nexus
+      POSTGRES_PASSWORD: nexus
+      POSTGRES_DB: nexusbase
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nexus -d nexusbase"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  neo4j:
+    image: neo4j:5-community
+    container_name: nexusbase-neo4j
+    restart: unless-stopped
+    ports:
+      - "7474:7474"   # Neo4j Browser
+      - "7687:7687"   # Bolt protocol
+    environment:
+      NEO4J_AUTH: neo4j/nexusbase
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_server_memory_heap_initial__size: "256m"
+      NEO4J_server_memory_heap_max__size: "512m"
+    volumes:
+      - neo4jdata:/data
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p nexusbase 'RETURN 1' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    image: redis/redis-stack:latest
+    container_name: nexusbase-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+      - "8001:8001"  # Redis Insight UI
+    environment:
+      REDIS_ARGS: "--save 60 1" # Enable persistence
+    volumes:
+      - redisdata:/data
+
+volumes:
+  pgdata:
+  neo4jdata:
+  redisdata:
