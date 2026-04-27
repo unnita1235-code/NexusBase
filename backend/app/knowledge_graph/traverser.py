@@ -12,10 +12,10 @@ from __future__ import annotations
 
 import logging
 
-from app.config import settings
+from app.core.config import settings
 from app.shared.models import allowed_levels_for, AccessLevel
 from app.knowledge_graph.models import Entity, Relationship, TraversalResult
-from app.knowledge_graph.neo4j_client import run_query, get_driver
+from app.infrastructure.neo4j_client import run_query, get_driver
 
 logger = logging.getLogger("rag.knowledge_graph.traverser")
 

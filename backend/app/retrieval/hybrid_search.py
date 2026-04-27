@@ -16,9 +16,9 @@ from __future__ import annotations
 import logging
 from collections import defaultdict
 
-from app.shared.db import get_pool
+from app.infrastructure.database import get_pool
 from app.shared.models import RetrievedChunk
-from app.config import settings
+from app.core.config import settings
 
 logger = logging.getLogger("rag.retrieval.hybrid_search")
 

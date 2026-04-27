@@ -17,7 +17,7 @@ import logging
 
 import google.generativeai as genai
 
-from app.config import settings
+from app.core.config import settings
 from app.knowledge_graph.models import Entity, Relationship, ExtractionResult
 
 logger = logging.getLogger("rag.knowledge_graph.extractor")

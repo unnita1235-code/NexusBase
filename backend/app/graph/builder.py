@@ -16,7 +16,7 @@ import logging
 
 from langgraph.graph import StateGraph, END
 
-from app.graph.state import GraphState
+from app.agents.state import GraphState
 from app.graph.nodes import (
     semantic_router,
     sql_agent,
@@ -25,6 +25,7 @@ from app.graph.nodes import (
     grade_documents,
     generate,
     web_search,
+    deep_research,
     query_rewrite,
     secondary_search,
 )
@@ -57,6 +58,7 @@ def build_graph() -> StateGraph:
     graph.add_node("grade_documents", grade_documents)
     graph.add_node("generate", generate)
     graph.add_node("web_search", web_search)
+    graph.add_node("deep_research", deep_research)
     graph.add_node("query_rewrite", query_rewrite)
     graph.add_node("secondary_search", secondary_search)
 
@@ -85,16 +87,18 @@ def build_graph() -> StateGraph:
     # retrieve → grade_documents (always)
     graph.add_edge("retrieve", "grade_documents")
 
-    # grade_documents → generate | query_rewrite | secondary_search (conditional)
+    # grade_documents → generate | deep_research (conditional)
     graph.add_conditional_edges(
         "grade_documents",
         route_after_grading,
         {
             "generate": "generate",
-            "query_rewrite": "query_rewrite",
-            "secondary_search": "secondary_search",
+            "deep_research": "deep_research",
         },
     )
+
+    # deep_research → END (it synthesizes its own answer)
+    graph.add_edge("deep_research", END)
 
     # query_rewrite → retrieve (loop back with rewritten query)
     graph.add_edge("query_rewrite", "retrieve")

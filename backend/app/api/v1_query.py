@@ -9,10 +9,12 @@ from __future__ import annotations
 
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 
-from app.shared.models import QueryRequest, QueryResponse
-from app.graph.builder import rag_graph
+from app.domain.rag import QueryRequest, QueryResponse
+from app.domain.users import UserInDB
+from app.services.auth_service import get_current_user
+from app.agents.workflow import rag_graph
 
 logger = logging.getLogger("rag.api.query")
 
@@ -20,7 +22,10 @@ router = APIRouter()
 
 
 @router.post("/query", response_model=QueryResponse)
-async def query(request: QueryRequest):
+async def query(
+    request: QueryRequest,
+    current_user: UserInDB = Depends(get_current_user)
+):
     """
     Query the NexusBase GraphRAG system.
 
@@ -38,7 +43,7 @@ async def query(request: QueryRequest):
     try:
         # Step 1: Embed query for Semantic Cache check
         from app.ingestion.embedder import embed_query
-        from app.retrieval.semantic_cache import check_cache, store_cache
+        from app.infrastructure.redis_cache import check_cache, store_cache
         
         query_embedding = embed_query(request.query)
         

@@ -15,14 +15,14 @@ from __future__ import annotations
 
 import logging
 
-from app.shared.models import RetrievedChunk, AccessLevel, allowed_levels_for
+from app.domain.rag import RetrievedChunk, AccessLevel, allowed_levels_for
 from app.ingestion.embedder import embed_query
 from app.retrieval.hybrid_search import hybrid_search, semantic_search, reciprocal_rank_fusion
 from app.retrieval.logger import log_retrieved_chunks
 from app.retrieval.query_classifier import classify_query, QueryClassification
 from app.knowledge_graph.traverser import traverse_graph
 from app.knowledge_graph.models import TraversalResult
-from app.config import settings
+from app.core.config import settings
 
 logger = logging.getLogger("rag.retrieval.query_engine")
 
@@ -148,7 +148,7 @@ async def _fetch_chunks_by_ids(
 
     Uses semantic search restricted to the given chunk_ids for relevance ranking.
     """
-    from app.shared.db import get_pool
+    from app.infrastructure.database import get_pool
 
     allowed = allowed_levels_for(access_level)
     query_embedding = embed_query(query)

@@ -15,9 +15,9 @@ from __future__ import annotations
 
 import logging
 
-from app.shared.db import get_pool
+from app.infrastructure.database import get_pool
 from app.knowledge_graph.models import Entity, Relationship, ExtractionResult
-from app.knowledge_graph.neo4j_client import run_write, get_driver
+from app.infrastructure.neo4j_client import run_write, get_driver
 
 logger = logging.getLogger("rag.knowledge_graph.graph_builder")
 

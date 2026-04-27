@@ -1,55 +1,63 @@
 "use client"
 
-import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 const data = [
-  { time: "00:00", cost: 0.12 },
-  { time: "04:00", cost: 0.34 },
-  { time: "08:00", cost: 1.20 },
-  { time: "12:00", cost: 2.80 },
-  { time: "16:00", cost: 4.50 },
-  { time: "20:00", cost: 5.10 },
-  { time: "24:00", cost: 6.00 },
+  { day: "Mon", cost: 1.20 },
+  { day: "Tue", cost: 0.85 },
+  { day: "Wed", cost: 2.40 },
+  { day: "Thu", cost: 1.10 },
+  { day: "Fri", cost: 3.20 },
+  { day: "Sat", cost: 0.90 },
+  { day: "Sun", cost: 1.50 },
 ]
 
 export function TokenBurnChart() {
   return (
-    <Card className="rounded-sm border-border bg-black">
-      <CardHeader>
-        <CardTitle className="text-sm font-medium tracking-wide uppercase text-muted-foreground">Token Burn Rate</CardTitle>
-        <CardDescription className="text-xs">API Cost ($) / Last 24 Hours</CardDescription>
+    <Card className="rounded-none border-dotted border-2 border-zinc-800 bg-black shadow-none">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-[10px] font-bold tracking-[0.2em] uppercase text-zinc-500">Token Burn Rate</CardTitle>
+        <CardDescription className="text-xs text-zinc-400">LLM API Cost ($) / Last 7 Days</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[200px] w-full">
+        <div className="h-[180px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data}>
+            <LineChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#222" vertical={false} />
               <XAxis 
-                dataKey="time" 
-                stroke="#333" 
+                dataKey="day" 
+                stroke="#444" 
                 fontSize={10} 
                 tickLine={false} 
                 axisLine={false} 
+                dy={10}
               />
               <YAxis 
-                stroke="#333" 
+                stroke="#444" 
                 fontSize={10} 
                 tickLine={false} 
                 axisLine={false} 
                 tickFormatter={(value) => `$${value}`}
               />
               <Tooltip 
-                contentStyle={{ backgroundColor: "#111", border: "1px solid #333", borderRadius: "2px" }}
-                itemStyle={{ color: "#fff", fontSize: "12px" }}
-                labelStyle={{ color: "#888", fontSize: "10px", marginBottom: "4px" }}
+                cursor={{ stroke: '#444', strokeWidth: 1 }}
+                contentStyle={{ 
+                  backgroundColor: "#000", 
+                  border: "1px dotted #444", 
+                  borderRadius: "0px",
+                  fontSize: "12px"
+                }}
+                itemStyle={{ color: "#fff" }}
+                labelStyle={{ color: "#888", marginBottom: "4px", fontSize: "10px" }}
               />
               <Line 
-                type="monotone" 
+                type="stepAfter" 
                 dataKey="cost" 
-                stroke="#fff" 
+                stroke="#ececec" 
                 strokeWidth={2} 
                 dot={false}
-                activeDot={{ r: 4, fill: "#fff" }} 
+                activeDot={{ r: 4, fill: "#fff", stroke: "#000", strokeWidth: 2 }} 
               />
             </LineChart>
           </ResponsiveContainer>

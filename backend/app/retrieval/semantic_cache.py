@@ -15,7 +15,7 @@ from typing import Optional
 from redis_om import Field, HashModel, get_redis_connection
 from redis_om.model.model import NotFoundError
 
-from app.config import settings
+from app.core.config import settings
 from app.shared.models import QueryResponse, RetrievedChunk
 
 logger = logging.getLogger("rag.retrieval.semantic_cache")

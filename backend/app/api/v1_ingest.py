@@ -11,7 +11,8 @@ import logging
 
 from fastapi import APIRouter, File, Form, UploadFile, HTTPException
 
-from app.shared.models import AccessLevel, IngestResponse
+from app.domain.rag import AccessLevel, IngestResponse
+from app.api.auth_deps import get_current_user, User
 from app.ingestion.pipeline import ingest_document
 
 logger = logging.getLogger("rag.api.ingest")

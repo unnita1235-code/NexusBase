@@ -15,7 +15,7 @@ import fitz  # PyMuPDF
 from PIL import Image
 import google.generativeai as genai
 
-from app.config import settings
+from app.core.config import settings
 from app.ingestion.loader import LoadedDocument
 
 logger = logging.getLogger("rag.ingestion.vision_loader")

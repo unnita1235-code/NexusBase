@@ -71,3 +71,22 @@ CREATE INDEX IF NOT EXISTS idx_chunk_entities_name
 -- B-tree index for entity lookups by type
 CREATE INDEX IF NOT EXISTS idx_chunk_entities_type
     ON chunk_entities (entity_type);
+
+-- =============================================================
+-- system_settings table
+-- =============================================================
+-- Stores dynamic configuration, prompts, and encrypted API keys.
+CREATE TABLE IF NOT EXISTS system_settings (
+    key             text            PRIMARY KEY,
+    value           text            NOT NULL,
+    is_encrypted    boolean         DEFAULT false,
+    updated_at      timestamptz     NOT NULL DEFAULT now()
+);
+
+-- Seed initial settings from environment defaults
+INSERT INTO system_settings (key, value, is_encrypted) VALUES
+('chunk_size', '512', false),
+('chunk_overlap', '64', false),
+('system_prompt', 'You are a helpful assistant that answers questions based on the provided context. If the context doesn''t contain enough information, say so clearly. Always cite your sources by mentioning the document name.', false),
+('grader_prompt', 'You are a strict relevance grader for a RAG system. Is this document chunk actually relevant to answering the user''s question? Consider semantic relevance, not just keyword overlap. Respond with ONLY ''yes'' or ''no''.', false)
+ON CONFLICT (key) DO NOTHING;

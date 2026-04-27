@@ -11,8 +11,8 @@ from __future__ import annotations
 
 import logging
 
-from app.config import settings
-from app.graph.state import GraphState
+from app.core.config import settings
+from app.agents.state import GraphState
 
 logger = logging.getLogger("rag.graph.edges")
 
@@ -38,19 +38,12 @@ def route_after_grading(state: GraphState) -> str:
         )
         return "generate"
 
-    # 0% relevant — decide between rewrite and secondary search
-    if retry_count < max_retries:
-        logger.info(
-            f"  Routing → query_rewrite "
-            f"(0% relevant, retry {retry_count + 1}/{max_retries})"
-        )
-        return "query_rewrite"
-    else:
-        logger.info(
-            f"  Routing → secondary_search "
-            f"(0% relevant, retries exhausted: {retry_count}/{max_retries})"
-        )
-        return "secondary_search"
+    # 0% relevant — route to deep_research for external fallback
+    logger.info(
+        f"  Routing → deep_research "
+        f"(0% relevant, triggering external fallback)"
+    )
+    return "deep_research"
 
 
 def route_semantic_query(state: GraphState) -> str:

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Terminal, Loader2, ShieldCheck } from "lucide-react";
+import { Send, Terminal, Loader2, ShieldCheck, Globe } from "lucide-react";
 
 interface Message {
   id: string;
@@ -12,6 +12,7 @@ interface Message {
     pdf_url: string;
     page: number;
     bounding_box: any;
+    is_external?: boolean;
   }>;
 }
 
@@ -89,9 +90,9 @@ export default function ChatPanel({ onCitationClick }: ChatPanelProps) {
               key={i}
               onClick={() => onCitationClick(citation)}
               className="inline-flex items-center justify-center w-5 h-5 mx-1 text-[9px] font-bold border border-zinc-800 bg-zinc-900 text-zinc-400 rounded-sm hover:bg-white hover:text-black hover:border-white transition-all cursor-pointer"
-              title={`View Source Citation [${id}]`}
+              title={citation.is_external ? `View Web Source: ${citation.pdf_url}` : `View Source Citation [${id}]`}
             >
-              {id}
+              {citation.is_external ? <Globe size={10} /> : id}
             </button>
           );
         }

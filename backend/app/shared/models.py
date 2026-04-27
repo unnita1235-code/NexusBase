@@ -75,6 +75,7 @@ class RetrievedChunk(BaseModel):
     rrf_score: float = 0.0
     weighted_score: float = 0.0  # Score(doc) = w1*CosineSim + w2*KeywordMatch
     page: int | None = None
+    is_external: bool = False
 
 
 # ─── API Request / Response Models ───────────────────────────
@@ -113,3 +114,21 @@ class QueryResponse(BaseModel):
     total_graded: int = 0
     total_relevant: int = 0
     retrieval_time_ms: int = 0
+
+
+# ─── Settings Models ─────────────────────────────────────────
+
+class SystemSetting(BaseModel):
+    """A single configuration setting."""
+    key: str
+    value: str
+    is_encrypted: bool = False
+    updated_at: datetime | None = None
+
+class SettingsUpdate(BaseModel):
+    """Request body for updating multiple settings."""
+    settings: list[SystemSetting]
+
+class SettingsResponse(BaseModel):
+    """Response from /v1/settings."""
+    settings: list[SystemSetting]

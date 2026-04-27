@@ -20,12 +20,13 @@ import google.generativeai as genai
 from tavily import TavilyClient
 import anthropic
 
-from app.config import settings
+from app.core.config import settings
 from app.shared.models import AccessLevel, RetrievedChunk
 from app.retrieval import query_engine
 from app.retrieval.query_classifier import classify_query
 from app.retrieval.logger import log_graph_traversal
-from app.graph.state import GraphState
+from app.agents.state import GraphState
+from app.core.dynamic_config import get_config_value
 
 logger = logging.getLogger("rag.graph.nodes")
 
@@ -42,7 +43,8 @@ async def semantic_router(state: GraphState) -> dict:
     logger.info("── Node: SEMANTIC_ROUTER ──")
     question = state["question"]
 
-    genai.configure(api_key=settings.gemini_api_key)
+    api_key = await get_config_value("gemini_api_key", settings.gemini_api_key)
+    genai.configure(api_key=api_key)
     model = genai.GenerativeModel(settings.router_model)
 
     prompt = f"""You are an expert query router for an enterprise RAG system.
@@ -93,7 +95,8 @@ async def sql_agent(state: GraphState) -> dict:
     logger.info("── Node: SQL_AGENT ──")
     question = state["question"]
 
-    client = OpenAI(api_key=settings.openai_api_key)
+    api_key = await get_config_value("openai_api_key", settings.openai_api_key)
+    client = OpenAI(api_key=api_key)
     response = client.chat.completions.create(
         model=settings.llm_model,
         messages=[
@@ -118,7 +121,8 @@ async def summarize_document(state: GraphState) -> dict:
     logger.info("── Node: SUMMARIZE_DOCUMENT ──")
     question = state["question"]
 
-    client = OpenAI(api_key=settings.openai_api_key)
+    api_key = await get_config_value("openai_api_key", settings.openai_api_key)
+    client = OpenAI(api_key=api_key)
     response = client.chat.completions.create(
         model=settings.llm_model,
         messages=[
@@ -225,11 +229,12 @@ async def hyde(state: GraphState) -> dict:
 
     question = state["question"]
     
-    if not settings.anthropic_api_key:
+    api_key = await get_config_value("anthropic_api_key", settings.anthropic_api_key)
+    if not api_key:
         logger.warning("  Anthropic API key not configured — skipping HyDE")
         return {}
 
-    client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
+    client = anthropic.AsyncAnthropic(api_key=api_key)
     
     prompt = (
         "You are an expert technical assistant. "
@@ -280,21 +285,31 @@ async def grade_documents(state: GraphState) -> dict:
     documents = state["documents"]
 
     # Configure Gemini
-    genai.configure(api_key=settings.gemini_api_key)
+    api_key = await get_config_value("gemini_api_key", settings.gemini_api_key)
+    genai.configure(api_key=api_key)
     model = genai.GenerativeModel(settings.grader_model)
 
     relevant_docs: list[RetrievedChunk] = []
     total = len(documents)
 
+    # Fetch dynamic grader prompt
+    default_prompt_template = (
+        "You are a strict relevance grader for a RAG system.\n\n"
+        "USER QUESTION: {question}\n\n"
+        "DOCUMENT CHUNK:\n{chunk_content}\n\n"
+        "Is this document chunk actually relevant to answering the user's question? "
+        "Consider semantic relevance, not just keyword overlap.\n"
+        "Respond with ONLY 'yes' or 'no'."
+    )
+    prompt_template = await get_config_value("grader_prompt", default_prompt_template)
+
     for doc in documents:
-        prompt = (
-            "You are a strict relevance grader for a RAG system.\n\n"
-            f"USER QUESTION: {question}\n\n"
-            f"DOCUMENT CHUNK:\n{doc.content[:500]}\n\n"
-            "Is this document chunk actually relevant to answering the user's question? "
-            "Consider semantic relevance, not just keyword overlap.\n"
-            "Respond with ONLY 'yes' or 'no'."
-        )
+        # Interpolate variables if they exist in the template
+        try:
+            prompt = prompt_template.format(question=question, chunk_content=doc.content[:500])
+        except Exception:
+            # Fallback if template is broken
+            prompt = default_prompt_template.format(question=question, chunk_content=doc.content[:500])
 
         try:
             response = model.generate_content(
@@ -349,7 +364,9 @@ async def generate(state: GraphState) -> dict:
 
     question = state["question"]
     documents = state["documents"]
-    client = OpenAI(api_key=settings.openai_api_key)
+    
+    api_key = await get_config_value("openai_api_key", settings.openai_api_key)
+    client = OpenAI(api_key=api_key)
 
     # Build context from documents
     context_parts = []
@@ -360,16 +377,20 @@ async def generate(state: GraphState) -> dict:
 
     context = "\n\n---\n\n".join(context_parts) if context_parts else "No relevant context found."
 
+    # Fetch dynamic system prompt
+    default_system_prompt = (
+        "You are a helpful assistant that answers questions based on the provided context. "
+        "If the context doesn't contain enough information, say so clearly. "
+        "Always cite your sources by mentioning the document name."
+    )
+    system_prompt = await get_config_value("system_prompt", default_system_prompt)
+
     response = client.chat.completions.create(
         model=settings.llm_model,
         messages=[
             {
                 "role": "system",
-                "content": (
-                    "You are a helpful assistant that answers questions based on the provided context. "
-                    "If the context doesn't contain enough information, say so clearly. "
-                    "Always cite your sources by mentioning the document name."
-                ),
+                "content": system_prompt,
             },
             {
                 "role": "user",
@@ -409,13 +430,14 @@ async def web_search(state: GraphState) -> dict:
 
     question = state.get("active_query") or state["question"]
 
-    if not settings.tavily_api_key:
+    api_key = await get_config_value("tavily_api_key", settings.tavily_api_key)
+    if not api_key:
         logger.warning("  Tavily API key not configured — skipping web search")
         path = list(state.get("graph_path", []))
         path.append("web_search")
         return {"graph_path": path}
 
-    tavily = TavilyClient(api_key=settings.tavily_api_key)
+    tavily = TavilyClient(api_key=api_key)
     results = tavily.search(query=question, max_results=3)
 
     web_chunks: list[RetrievedChunk] = []
@@ -461,7 +483,8 @@ async def query_rewrite(state: GraphState) -> dict:
     current_query = state.get("active_query") or original_question
     retry = state.get("retry_count", 0)
 
-    client = OpenAI(api_key=settings.openai_api_key)
+    api_key = await get_config_value("openai_api_key", settings.openai_api_key)
+    client = OpenAI(api_key=api_key)
 
     response = client.chat.completions.create(
         model=settings.llm_model,
@@ -587,3 +610,15 @@ async def secondary_search(state: GraphState) -> dict:
         "documents": chunks,
         "graph_path": path,
     }
+
+
+# ─── Node 7: Deep Research (Stub) ───────────────────────────
+
+async def deep_research(state: GraphState) -> dict:
+    """
+    Synthesize a final response when web results are available.
+    """
+    logger.info("── Node: DEEP_RESEARCH ──")
+    # For now, just use the generate node logic
+    return await generate(state)
+

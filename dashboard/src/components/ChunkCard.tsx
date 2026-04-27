@@ -1,6 +1,7 @@
 "use client";
 
 import type { RetrievedChunk } from "@/lib/types";
+import { Globe } from "lucide-react";
 import StatusBadge from "./StatusBadge";
 import ScoreBar from "./ScoreBar";
 
@@ -14,9 +15,14 @@ export default function ChunkCard({ chunk }: ChunkCardProps) {
       {/* Header: Rank + Source */}
       <div className="chunk-card__header">
         <span className="chunk-card__rank">#{chunk.rank}</span>
-        <span className="chunk-card__source" title={chunk.source}>
-          {chunk.source}
-        </span>
+        <div className="flex items-center gap-1.5 overflow-hidden">
+          {chunk.is_external && (
+            <Globe size={12} className="text-zinc-400 flex-shrink-0" />
+          )}
+          <span className="chunk-card__source truncate" title={chunk.source}>
+            {chunk.source}
+          </span>
+        </div>
       </div>
 
       {/* Content snippet */}
