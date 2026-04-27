@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { Github, Mail, Loader2, Hexagon } from "lucide-react";
+import { GitBranch, Mail, Loader2, Hexagon } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -55,7 +55,7 @@ export default function LoginPage() {
               {isLoading === "github" ? (
                 <Loader2 className="animate-spin" size={20} />
               ) : (
-                <Github size={20} className="group-hover:scale-110 transition-transform" />
+                <GitBranch size={20} className="group-hover:scale-110 transition-transform" />
               )}
               <span>Continue with GitHub</span>
             </button>
