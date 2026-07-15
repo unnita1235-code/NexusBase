@@ -1,4 +1,5 @@
-# NexusBase: Enterprise RAG Architecture
+[![Stack](https://img.shields.io/badge/Status-Portfolio%20Project-orange?style=for-the-badge)](https://github.com/unnita1235-code/NexusBase)# NexusBase: Enterprise RAG Architecture
+
 
 [![Stack](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![Stack](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
