@@ -6,6 +6,9 @@
 [![Stack](https://img.shields.io/badge/LangGraph-24292e?style=for-the-badge&logo=chainlink&logoColor=white)](https://python.langchain.com/docs/langgraph/)
 [![Stack](https://img.shields.io/badge/pgvector-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
 
+> **Note:** Frontend deployment is currently being redeployed. The codebase is complete — see [Architecture](#-architecture) below.
+
+
 **NexusBase** is a production-grade Retrieval-Augmented Generation (RAG) system designed for enterprise-scale knowledge management. It leverages a modern agentic workflow using LangGraph to handle complex document reasoning, multi-step retrieval, and structured responses.
 
 ## 🏗️ Architecture
