@@ -6,6 +6,13 @@
 [![Stack](https://img.shields.io/badge/LangGraph-24292e?style=for-the-badge&logo=chainlink&logoColor=white)](https://python.langchain.com/docs/langgraph/)
 [![Stack](https://img.shields.io/badge/pgvector-336791?style=for-the-badge&logo=postgresql&logoColor=white)](https://github.com/pgvector/pgvector)
 
+## Live Preview
+
+> **Deployment Status:** Frontend is currently being redeployed. Backend API is fully functional. Run locally with Docker — see Quick Start below.
+
+[![NexusBase Architecture](https://api.microlink.io/?url=https://github.com/unnita1235-code/NexusBase&screenshot=true&meta=false&embed=screenshot.url)](https://github.com/unnita1235-code/NexusBase)
+
+
 > **Note:** Frontend deployment is currently being redeployed. The codebase is complete — see [Architecture](#-architecture) below.
 
 
